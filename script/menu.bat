@@ -137,12 +137,13 @@ curl -s -L https://github.com/NakamaStream/%repo%/archive/refs/heads/master.zip 
 
 if %errorlevel% neq 0 (
     echo Failed to download %repo%.
+    pause
+    goto :menu
 ) else (
     echo %repo% downloaded successfully.
+    pause
+    goto :menu
 )
-
-pause
-goto :menu
 
 :extra
 cls
