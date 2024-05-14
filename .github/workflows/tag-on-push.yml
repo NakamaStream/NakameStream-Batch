@@ -15,7 +15,7 @@ jobs:
       - name: Generate random tag
         id: generate_tag
         run: |
-          new_tag=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          new_tag=$(date '+random-%Y%m%d-%H%M%S')
           echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
 
       - name: Create tag
