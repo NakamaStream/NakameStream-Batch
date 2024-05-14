@@ -15,15 +15,14 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          latest_tag=$(git describe --tags --abbrev=0)
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "::set-output name=tag::$latest_tag"
 
       - name: Create tag
         id: tag
         run: |
           current_tag="${{ steps.get_tag.outputs.tag }}"
-          current_version=$(echo $current_tag | cut -c 2-)
-          version_parts=(${current_version//./ })
+          version_parts=(${current_tag//./ })
           major=${version_parts[0]}
           minor=${version_parts[1]}
           patch=${version_parts[2]}
