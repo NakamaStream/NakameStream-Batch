@@ -1,0 +1,40 @@
+name: Tag on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "::set-output name=tag::$latest_tag"
+
+      - name: Create tag
+        id: tag
+        run: |
+          current_tag="${{ steps.get_tag.outputs.tag }}"
+          current_version=$(echo $current_tag | cut -c 2-)
+          version_parts=(${current_version//./ })
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+          patch=$((patch + 1))
+          new_tag="v$major.$minor.$patch"
+          echo "::set-output name=new_tag::$new_tag"
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add script/menu.bat script/menu-es.bat
+          git diff --cached --name-status > changed_files.txt
+          git commit -m "Changes made in this push:"
+          git tag -a $new_tag -F changed_files.txt
+          git push origin --tags
