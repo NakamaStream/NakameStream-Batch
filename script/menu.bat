@@ -128,7 +128,7 @@ echo/
 echo [.......\ ]
 timeout /t 1 /nobreak >nul
 cls
-echo Downloading %repo%...
+echo Downloading %repo%....
 echo/
 echo [........]
 timeout /t 1 /nobreak >nul
