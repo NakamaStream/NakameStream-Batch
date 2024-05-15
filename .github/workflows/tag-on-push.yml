@@ -26,7 +26,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add script/menu.bat script/menu-es.bat
-          git diff --cached --name-status > changed_files.txt
           git commit -m "Changes made in this push:"
-          git tag -a $new_tag -F changed_files.txt
           git push origin --tags
