@@ -18,7 +18,13 @@ jobs:
           new_tag=$(date '+random-%Y%m%d-%H%M%S')
           echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
 
-      - name: Create tag
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet script/menu.bat script/menu-es.bat || echo "CHANGES_FOUND=true" >> $GITHUB_ENV
+
+      - name: Create tag if changes found
+        if: env.CHANGES_FOUND == 'true'
         id: create_tag
         run: |
           new_tag="${{ env.NEW_TAG }}"
@@ -26,5 +32,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add script/menu.bat script/menu-es.bat
+          git diff --cached --name-status > changed_files.txt
           git commit -m "Changes made in this push:"
+          git tag -a $new_tag -F changed_files.txt
           git push origin --tags
