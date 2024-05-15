@@ -35,7 +35,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add script/menu.bat script/menu-es.bat
-          git commit -m "Changes made in this push"
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Changes made in this push"
+          fi
           git tag -a $new_tag -m "Tagging changes in script/menu.bat and script/menu-es.bat"
           git push origin --tags
 
