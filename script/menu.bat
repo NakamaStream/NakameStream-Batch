@@ -1,4 +1,6 @@
 @echo off
+setlocal enabledelayedexpansion
+
 cls
 echo -----------------------------------------
 echo      Welcome to the Interactive Menu NakamaStream
@@ -87,60 +89,46 @@ if "%location_choice%"=="3" (
 goto download
 
 :download
+:: Set colors
+set "ColorGreen=0A"
+set "ColorRed=0C"
+set "ColorReset=07"
+
+:: Function to show progress
+:show_progress
 cls
 echo Downloading %repo%...
 echo/
-echo [..        ]
-timeout /t 1 /nobreak >nul
+for %%i in (.. ..\ ...\ ....\ .....\ ......\ .......\ ........) do (
+    cls
+    echo Downloading %repo%...
+    echo/
+    echo %%i
+    timeout /t 1 /nobreak >nul
+)
+goto :download_file
+
+:download_file
 cls
 echo Downloading %repo%...
-echo/
-echo [..\       ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [...\      ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [...\     ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [....\    ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [.....\   ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [......\  ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%...
-echo/
-echo [.......\ ]
-timeout /t 1 /nobreak >nul
-cls
-echo Downloading %repo%....
 echo/
 echo [........]
 timeout /t 1 /nobreak >nul
 
+:: Download the file
 curl -s -L https://github.com/NakamaStream/%repo%/archive/refs/heads/master.zip -o "%download_path%\%repo%.zip"
 
+:: Check if the download was successful
 if %errorlevel% neq 0 (
+    color %ColorRed%
     echo Failed to download %repo%.
+    color %ColorReset%
     pause
     goto :menu
 ) else (
+    color %ColorGreen%
     echo %repo% downloaded successfully.
+    color %ColorReset%
     pause
     goto :menu
 )

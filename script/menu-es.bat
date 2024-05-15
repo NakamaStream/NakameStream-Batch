@@ -1,4 +1,6 @@
 @echo off
+setlocal enabledelayedexpansion
+
 cls
 echo -----------------------------------------
 echo      Bienvenido al Menú Interactivo NakamaStream
@@ -87,48 +89,28 @@ if "%location_choice%"=="3" (
 goto download
 
 :download
+:: Establecer colores
+set "ColorGreen=0A"
+set "ColorRed=0C"
+set "ColorReset=07"
+
+:: Función para mostrar el progreso
+:show_progress
 cls
 echo Descargando %repo%...
 echo/
-echo [..        ]
-timeout /t 1 /nobreak >nul
+for %%i in (.. ..\ ...\ ....\ .....\ ......\ .......\ ........) do (
+    cls
+    echo Descargando %repo%...
+    echo/
+    echo %%i
+    timeout /t 1 /nobreak >nul
+)
+goto :download_file
+
+:download_file
 cls
 echo Descargando %repo%...
-echo/
-echo [..\       ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [...\      ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [...\     ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [....\    ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [.....\   ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [......\  ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%...
-echo/
-echo [.......\ ]
-timeout /t 1 /nobreak >nul
-cls
-echo Descargando %repo%....
 echo/
 echo [........]
 timeout /t 1 /nobreak >nul
@@ -136,11 +118,15 @@ timeout /t 1 /nobreak >nul
 curl -s -L https://github.com/NakamaStream/%repo%/archive/refs/heads/master.zip -o "%download_path%\%repo%.zip"
 
 if %errorlevel% neq 0 (
+    color %ColorRed%
     echo Fallo al descargar %repo%.
+    color %ColorReset%
     pause
     goto :menu
 ) else (
+    color %ColorGreen%
     echo %repo% descargado exitosamente.
+    color %ColorReset%
     pause
     goto :menu
 )
