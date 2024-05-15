@@ -21,13 +21,7 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet HEAD^ HEAD script/menu.bat script/menu-es.bat; then
-            echo "No changes in script/menu.bat or script/menu-es.bat"
-            echo "CHANGES_FOUND=false" >> $GITHUB_ENV
-          else
-            echo "Changes found in script/menu.bat or script/menu-es.bat"
-            echo "CHANGES_FOUND=true" >> $GITHUB_ENV
-          fi
+          git diff --quiet HEAD^ HEAD script/menu.bat script/menu-es.bat || echo "CHANGES_FOUND=true" >> $GITHUB_ENV
 
       - name: Create tag if changes found
         if: env.CHANGES_FOUND == 'true'
@@ -37,6 +31,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add script/menu.bat script/menu-es.bat
-          git commit -m "Changes made in this push"
-          git tag -a $new_tag -m "Tagging changes in script/menu.bat and script/menu-es.bat"
-          git push origin --tags
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "Changes made in this push"
+            git tag -a $new_tag -m "Tagging changes in script/menu.bat and script/menu-es.bat"
+            git push origin --tags
+          fi
